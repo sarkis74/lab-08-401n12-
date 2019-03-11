@@ -1,54 +1,41 @@
 'use strict';
 
-const uuid = require('uuid/v4');// Unique ids
+const mongoose = require('mongoose');
 
-const schema = {// Schema here is requiring id and name
-    id: {required: true},
-    name: {required: true}
-};
+const productsSchema = mongoose.Schema({//This portion require Mongoose schema
+    name: {type: String, required: true},
+    category: {type: String, required: true}
+});
+
+productsSchema.pre('save', function(next) {
+    this.category = this.category.toUpperCase();
+    next();
+});
+
+
+const product = mongoose.model('product', productsSchema);
 
 class Products {
 
     constructor() {
-        this.database = [];// Instance of db for modeling
     }
 
-    get(id) {
-        let result = id ? this.database.filter(record => record.id == id) : this.database;// If there's an id we will search the db to see if it matches anything
-        return result;
+    get(_id) {
+        let request = _id ? {_id} : {};
+        return product.find(request);
     }
 
     post(entry) {
-        entry.id = uuid();// Post doesn't have id so we add one to each entry
-        let record = this.sanitize(entry);
-        if(record.id) { this.database.push(record) };// If record sanitized add to db
-        return record;
+        let newProduct = new product(entry);
+        return Promise.resolve(newProduct.save());
     }
 
-    put(id, entry) {
+    put(_id, entry) {
+        return product.findOneAndUpdate(_id, entry, {new: true});
     }
 
-    delete(id) {
-    }
-
-    sanitize(entry) {// This method is to make sure entries follow schema format
-        let valid = true;// Boolean for checking entries
-        let record = {};
-        for(let key in schema) {
-            if(schema[key].required) {// If there's a key that's required(== true)
-                if(entry[key]) {// If there's an entry object key
-                    record[key] = entry[key];
-                }
-                else {
-                    valid = false;
-                }
-            }
-            else {
-                record[key] = entry[key];
-            }
-
-        }
-        return valid ? record : undefined;// If valid true then record
+    delete(_id) {
+        return product.findOneAndDelete(_id);
     }
 
 }
