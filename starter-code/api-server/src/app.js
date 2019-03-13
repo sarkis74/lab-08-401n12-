@@ -46,8 +46,8 @@ app.use(errorHandler);
 // ROUTE HANDLER FUNCTIONS
 function getCategories(request,response,next) {
     // expects an array of object to be returned from the model
-    categories.get()
-        .then( data => {
+    categories.get()// Calling the class Categories method; since this route has an id we need to check our db
+        .then( data => {//
             const output = {
                 count: data.length,
                 results: data,
