@@ -13,8 +13,6 @@ productsSchema.pre('save', function(next) {
 });
 
 
-// const product = mongoose.model('product', productsSchema);
-
 class Products {
 
     constructor() {
