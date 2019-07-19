@@ -44,7 +44,7 @@ supergoose.stopDB = () => {
     mongoServer.stop();
 };
 
-// Just so that it can live in the tests folder
+// so that it can live in the tests folder
 describe('supergoose', () => {
     it('is super', () => {
         expect(true).toBeTruthy();
