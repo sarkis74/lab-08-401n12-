@@ -1,32 +1,28 @@
 'use strict';
 
-// 3rd Party Resources
-const express = require('express');
+// modules
 const cors = require('cors');
 const morgan = require('morgan');
-
-// Esoteric Resources
 const errorHandler = require( './middleware/error.js');
 const notFound = require( './middleware/404.js' );
 
-// Models
-const Products = require('./models/products.js');
-const products = new Products();
 
-const Categories = require('./models/categories.js');
-const categories = new Categories();
-
-// Prepare the express app
+// app and related middleware
+const express = require('express');
 const app = express();
-
-// App Level MW
 app.use(cors());
 app.use(morgan('dev'));
-
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-// Routes
+
+// mongoose models
+const Products = require('./models/products.js');
+const products = new Products();
+const Categories = require('./models/categories.js');
+const categories = new Categories();
+
+//routes
 app.get('/categories', getCategories);
 app.post('/categories', postCategories);
 app.get('/categories/:id', getCategory);
@@ -39,15 +35,14 @@ app.get('/products/:id', getProduct);
 app.put('/products/:id', putProducts);
 app.delete('/products/:id', deleteProducts);
 
-// Catchalls
 app.use(notFound);
 app.use(errorHandler);
 
-// ROUTE HANDLER FUNCTIONS
+// categories callbacks
 function getCategories(request,response,next) {
     // expects an array of object to be returned from the model
-    categories.get()// Calling the class Categories method; since this route has an id we need to check our db
-        .then( data => {// Parameter passed to then
+    categories.get()
+        .then( data => {
             const output = {
                 count: data.length,
                 results: data,
@@ -60,17 +55,19 @@ function getCategories(request,response,next) {
 function getCategory(request,response,next) {
     // expects an array with the one matching record from the model
     categories.get(request.params.id)
-        .then( result => response.status(200).json(result[0]) )
+        .then( result => response.status(200).json(result) )
         .catch( next );
 }
 
 function postCategories(request,response,next) {
     // expects the record that was just added to the database
     categories.post(request.body)
-        .then( result => response.status(200).json(result) )
+        .then( result => {
+            // console.log(result);
+            response.status(200).json(result);
+        } )
         .catch( next );
 }
-
 
 function putCategories(request,response,next) {
     // expects the record that was just updated in the database
@@ -80,13 +77,14 @@ function putCategories(request,response,next) {
 }
 
 function deleteCategories(request,response,next) {
-    // Expects no return value (resource was deleted)
+    // when there's no return value (resource was deleted)
     categories.delete(request.params.id)
         .then( result => response.status(200).json(result) )
         .catch( next );
 }
 
 
+// product callbacks
 function getProducts(request,response,next) {
     // expects an array of objects back
     products.get()
@@ -114,7 +112,6 @@ function postProducts(request,response,next) {
         .catch( next );
 }
 
-
 function putProducts(request,response,next) {
     // expects the record that was just updated in the database
     products.put(request.params.id, request.body)
@@ -128,7 +125,6 @@ function deleteProducts(request,response,next) {
         .then( result => response.status(200).json(result) )
         .catch( next );
 }
-
 
 
 module.exports = {
