@@ -51,10 +51,7 @@ describe('tests for all data models', () => {
                         return mockRequest
                             .get('/categories')
                             .then( result => {
-                                // Had to add 3 to total to account for the
-                                // entries added in the tests above
                                 expect(result.body.count).toBe(5);
-                                // Had to adjust indices to account for those extra entries
                                 expect(result.body.results[3].name).toBe('sporting goods');
                                 expect(result.body.results[4].name).toBe('furniture');
                             });
@@ -97,7 +94,6 @@ describe('tests for all data models', () => {
             .send({name: 'soccer ball', category: 'sporting goods'})
             .then( result => {
                 expect(result.body.name).toBe('soccer ball');
-                // Category is ALL-CAPS due to the Mongoose pre-hook
                 expect(result.body.category).toBe('sporting goods');
                 expect(result.status).toBe(200);
             });
@@ -135,10 +131,7 @@ describe('tests for all data models', () => {
                         return mockRequest
                             .get('/products')
                             .then( result => {
-                                // Had to add 3 to total to account for entries
-                                // added in the tests above
                                 expect(result.body.count).toBe(5);
-                                // Had to adjust indices to account for those extra entries
                                 expect(result.body.results[3].name).toBe('baseball glove');
                                 expect(result.body.results[4].name).toBe('couch');
                                 expect(result.status).toBe(200);
@@ -157,7 +150,6 @@ describe('tests for all data models', () => {
                     .send({name:'soccer ball', category:'sporting goods'})
                     .then( result => {
                         expect(result.body.name).toBe('puck');
-                        // Category is not ALL-CAPS since pre-hook only operates on the .save() function
                         expect(result.body.category).toBe('sporting goods');
                         expect(result.status).toBe(200);
                     });
