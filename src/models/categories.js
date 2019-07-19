@@ -13,9 +13,9 @@ class Categories {
         this.database = [];// Instance of db for modeling
     }
 
-    get(_id) {
-        let result = this.database.filter( record => record.id === _id);// If there's an id we will search the db to see if it matches anything
-        return Promise.resolve(result[0]);
+    get(id) {
+        let result = this.database.filter( record => record.id === id);// If there's an id we will search the db to see if it matches anything
+        return Promise.resolve(result);// We're returning the db for now
     }
 
     post(record) {
@@ -25,19 +25,19 @@ class Categories {
         return Promise.resolve(newCategory);
     }
 
-    put(_id, record) {
-        record.id = _id;
+    put(id, record) {
+        record.id = id;
         let entry = this.sanitize(record);
         if(entry.id) {// If record sanitized add to db
-            this.database = this.database.map( item => (item.id === _id) ? record : item);
+            this.database = this.database.map( item => (item.id === id) ? record : item);
         }
         return Promise.resolve(record);
     }
 
-    delete(_id) {
+    delete(id) {
         let index;
         for(let i = 0; i < this.database.length; i++) {
-            if(this.database[i].id === _id) index = i;
+            if(this.database[i].id === id) index = i;
         }
         this.database.splice(index, 1);
         return Promise.resolve();

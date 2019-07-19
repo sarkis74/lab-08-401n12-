@@ -47,7 +47,7 @@ app.use(errorHandler);
 function getCategories(request,response,next) {
     // expects an array of object to be returned from the model
     categories.get()// Calling the class Categories method; since this route has an id we need to check our db
-        .then( data => {//
+        .then( data => {// Parameter passed to then
             const output = {
                 count: data.length,
                 results: data,
@@ -67,7 +67,7 @@ function getCategory(request,response,next) {
 function postCategories(request,response,next) {
     // expects the record that was just added to the database
     categories.post(request.body)
-        .then( result => response.status(200).json(result[0]) )
+        .then( result => response.status(200).json(result) )
         .catch( next );
 }
 
@@ -75,7 +75,7 @@ function postCategories(request,response,next) {
 function putCategories(request,response,next) {
     // expects the record that was just updated in the database
     categories.put(request.params.id, request.body)
-        .then( result => response.status(200).json(result[0]) )
+        .then( result => response.status(200).json(result) )
         .catch( next );
 }
 
